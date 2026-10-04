@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Quest · Entrena tu mente</title>
+<style>
+:root{
+  --bg:#ede9fe; --card:#fff; --ink:#27324f; --muted:#68738f;
+  --purple:#8b7cf6; --purple2:#a99cf8; --cyan:#8ed8ea; --green:#82d9b1;
+  --yellow:#f6d98b; --pink:#efa0b8; --line:#ddd9ef; --shadow:0 16px 45px rgba(48,52,100,.10);
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:var(--bg)}
+button{font:inherit;cursor:pointer;border:0}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh}
+.logo{font-weight:900;font-size:21px;display:flex;align-items:center;gap:9px;margin-bottom:28px}.logo span{background:var(--purple);color:#fff;padding:7px 9px;border-radius:11px}
+.profile{background:#f2f0ff;border-radius:18px;padding:14px;margin-bottom:25px}.avatar{font-size:38px}.profile b{display:block;margin-top:5px}.xpbar{height:7px;background:#dddafa;border-radius:10px;margin-top:9px;overflow:hidden}.xpbar i{display:block;width:62%;height:100%;background:var(--purple);border-radius:10px}
+.nav{display:flex;flex-direction:column;gap:7px}.nav button{background:transparent;text-align:left;padding:12px 13px;border-radius:12px;color:var(--muted);font-weight:700}.nav button.active,.nav button:hover{background:#f0efff;color:var(--purple)}
+.side-bottom{position:absolute;bottom:20px;left:18px;right:18px;background:#fff8df;border-radius:16px;padding:13px;font-size:12px;color:#7b6730}
+main{padding:30px 42px 60px;max-width:1250px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.crumb{color:var(--muted);font-size:13px}.stats{display:flex;gap:9px}.pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 13px;font-weight:800;font-size:13px}
+.hero{background:linear-gradient(135deg,#6252e4,#8b7cf6);color:white;border-radius:28px;padding:34px;display:grid;grid-template-columns:1fr 290px;gap:20px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08);right:-70px;top:-90px}
+.hero h1{font-size:42px;line-height:1.02;margin:0 0 12px;letter-spacing:-1.5px}.hero p{max-width:650px;color:#eeeaff;font-size:16px;line-height:1.6;margin:0 0 20px}
+.primary{background:#fff;color:var(--purple);padding:12px 18px;border-radius:13px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.12)}
+.bot{display:flex;align-items:center;justify-content:center;z-index:1}.bot .robot{font-size:145px;filter:drop-shadow(0 15px 10px rgba(0,0,0,.16));animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateY(-9px)}}
+.quote{position:absolute;right:26px;bottom:22px;background:#fff;color:var(--ink);padding:9px 13px;border-radius:13px;font-size:12px;font-weight:800;box-shadow:0 8px 20px rgba(0,0,0,.12);max-width:190px}
+.section-title{display:flex;justify-content:space-between;align-items:end;margin:30px 0 14px}.section-title h2{margin:0;font-size:21px}.section-title span{font-size:12px;color:var(--muted)}
+.map{background:#fff;border:1px solid var(--line);border-radius:25px;padding:25px;box-shadow:var(--shadow)}
+.path{display:flex;align-items:center;gap:0;overflow:auto;padding:15px 5px 25px}.node-wrap{display:flex;align-items:center;min-width:140px}.connector{height:5px;width:70px;background:#dcdff0}.connector.done{background:var(--green)}
+.node{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:31px;background:#f0efff;border:5px solid #fff;box-shadow:0 5px 18px rgba(55,60,120,.15);position:relative}.node.done{background:#e5f9f0;border-color:#bcebd5}.node.current{background:#eae7ff;border-color:#8b7cf6;box-shadow:0 0 0 6px #eeecff}.node.lock{filter:grayscale(1);opacity:.45}.node small{position:absolute;bottom:-25px;font-size:10px;white-space:nowrap;font-weight:900;color:var(--muted)}
+.worlds{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}.world{padding:15px;border:1px solid var(--line);border-radius:17px;background:#fafbff}.world b{font-size:13px}.world p{margin:5px 0 0;font-size:11px;color:var(--muted);line-height:1.4}
+.grid{display:grid;grid-template-columns:1.35fr .8fr;gap:18px;margin-top:20px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 8px 25px rgba(48,52,100,.06)}
+.challenge h3{margin:0 0 5px}.eyebrow{font-size:11px;color:var(--purple);font-weight:900;text-transform:uppercase;letter-spacing:.08em}.challenge p{color:var(--muted);line-height:1.5;font-size:14px}
+.options{display:grid;gap:9px;margin-top:16px}.option{background:#f7f8fc;border:2px solid transparent;padding:13px 14px;border-radius:13px;text-align:left;font-weight:700;color:var(--ink)}.option:hover{border-color:#bcb5ff;background:#f4f2ff}.option.correct{border-color:var(--green);background:#eafaf3}.option.wrong{border-color:var(--pink);background:#fff0f4}
+.feedback{margin-top:13px;padding:12px;border-radius:13px;background:#f3f1ff;color:#5145ad;font-size:13px;font-weight:700;display:none}.feedback.show{display:block}
+.mascot-card{display:flex;gap:14px;align-items:center;background:#f5f3ff;border-radius:17px;padding:14px;margin-top:12px}.mascot-card .mini{font-size:58px}.mascot-card p{margin:3px 0;font-size:13px;line-height:1.4}
+.achievements{display:grid;grid-template-columns:1fr 1fr;gap:10px}.badge{border:1px solid var(--line);border-radius:15px;padding:13px;text-align:center;background:#fafbff}.badge .ico{font-size:28px}.badge b{display:block;font-size:11px;margin-top:5px}.badge.locked{opacity:.4;filter:grayscale(1)}
+footer{text-align:center;color:#8790a7;font-size:11px;margin-top:28px}
+.toast{position:fixed;right:22px;bottom:22px;background:#1f2744;color:#fff;padding:14px 17px;border-radius:14px;box-shadow:var(--shadow);font-size:13px;font-weight:800;transform:translateY(100px);opacity:0;transition:.3s}.toast.show{transform:translateY(0);opacity:1}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:20px}.hero{grid-template-columns:1fr}.bot{display:none}.worlds{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.hero h1{font-size:34px}}
+
+/* Paleta pastel: lavanda + azul cielo */
+body{
+  background:
+    radial-gradient(circle at 12% 10%, rgba(223,244,255,.95) 0, rgba(223,244,255,0) 32%),
+    radial-gradient(circle at 88% 88%, rgba(237,233,254,.95) 0, rgba(237,233,254,0) 34%),
+    var(--bg);
+}
+.hero{
+  background: linear-gradient(135deg, #ede9fe 0%, #dff4ff 100%);
+}
+.world{
+  background: linear-gradient(145deg, #ffffff 0%, #f3f0ff 100%);
+}
+.challenge{
+  background: linear-gradient(145deg, #ffffff 0%, #eaf8ff 100%);
+}
+.mascot{
+  background: linear-gradient(145deg, #f3f0ff 0%, #e5f7ff 100%);
+}
+.tip{
+  background: #e8f7fc;
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><span>AI</span> Quest</div>
+  <div class="profile">
+    <div class="avatar">🧑‍🚀</div><b>Entrenador Alex</b><small style="color:#777">Nivel 3 · Explorador</small>
+    <div class="xpbar"><i></i></div><small>620 / 1000 XP</small>
+  </div>
+  <nav class="nav">
+    <button class="active">🗺️ Mi recorrido</button>
+    <button>🤖 Mi mascota</button>
+    <button>🏆 Logros</button>
+    <button>📚 Conceptos</button>
+  </nav>
+  <div class="side-bottom">💡 <b>Consejo:</b> aprender IA no significa saber programar. Primero entiende cómo piensa una máquina.</div>
+</aside>
+
+<main>
+  <div class="top">
+    <div class="crumb">AI QUEST / MI RECORRIDO</div>
+    <div class="stats"><div class="pill">🔥 4 días</div><div class="pill">⭐ 620 XP</div><div class="pill">🏆 3 logros</div></div>
+  </div>
+
+  <section class="hero">
+    <div>
+      <div style="font-size:12px;font-weight:900;letter-spacing:.1em;opacity:.8">ENTRENA TU MENTE</div>
+      <h1>Aprende IA.<br>Entrena a tu criatura.</h1>
+      <p>Explora conceptos de Inteligencia Artificial desde cero mediante retos cortos, decisiones, experimentos y desafíos. Tu mascota aprende contigo.</p>
+      <button class="primary" onclick="scrollToChallenge()">Continuar entrenamiento →</button>
+    </div>
+    <div class="bot"><div class="robot">🤖</div><div class="quote">“¡Necesito aprender a reconocer patrones! ¿Me ayudas?”</div></div>
+  </section>
+
+  <div class="section-title"><h2>🗺️ Tu ruta de aprendizaje</h2><span>5 mundos · progreso adaptativo</span></div>
+  <section class="map">
+    <div class="path">
+      <div class="node-wrap"><div class="node done">🌱<small>Datos</small></div><div class="connector done"></div></div>
+      <div class="node-wrap"><div class="node done">🧠<small>Patrones</small></div><div class="connector done"></div></div>
+      <div class="node-wrap"><div class="node current">⚙️<small>Entrenamiento</small></div><div class="connector"></div></div>
+      <div class="node-wrap"><div class="node lock">🤖<small>Machine Learning</small></div><div class="connector"></div></div>
+      <div class="node-wrap"><div class="node lock">✨<small>IA generativa</small></div><div class="connector"></div></div>
+      <div class="node-wrap"><div class="node lock">🛡️<small>IA responsable</small></div></div>
+    </div>
+    <div class="worlds">
+      <div class="world"><b>🌱 01 · Datos</b><p>Información que alimenta a una IA.</p></div>
+      <div class="world"><b>🧠 02 · Patrones</b><p>Cómo una máquina encuentra relaciones.</p></div>
+      <div class="world"><b>⚙️ 03 · Entrenamiento</b><p>Cómo aprende a partir de ejemplos.</p></div>
+      <div class="world"><b>🤖 04 · Machine Learning</b><p>Modelos, predicciones y aprendizaje.</p></div>
+      <div class="world"><b>🛡️ 05 · IA responsable</b><p>Sesgos, privacidad y decisiones.</p></div>
+    </div>
+  </section>
+
+  <div class="grid" id="challenge">
+    <section class="card challenge">
+      <div class="eyebrow">Desafío activo · Nivel 3</div>
+      <h3>¿Cómo aprende una máquina?</h3>
+      <p>Tu criatura necesita reconocer un patrón. Observa los ejemplos y elige qué debería aprender primero una máquina.</p>
+      <div style="background:#f8f9fd;border-radius:15px;padding:13px;font-size:13px">
+        🐶 🐶 🐱 🐶 🐶 🐱 🐶 🐶 <br>
+        <b>Ejemplo:</b> muchas imágenes etiquetadas como “perro” y “gato”.
+      </div>
+      <div class="options">
+        <button class="option" onclick="answer(this,false)">A. Memorizar todos los píxeles exactamente.</button>
+        <button class="option" onclick="answer(this,true)">B. Encontrar patrones en los ejemplos para distinguirlos.</button>
+        <button class="option" onclick="answer(this,false)">C. Adivinar sin utilizar datos.</button>
+      </div>
+      <div class="feedback" id="feedback"></div>
+      <button class="primary" style="margin-top:13px;display:none" id="nextBtn" onclick="nextChallenge()">Siguiente desafío →</button>
+    </section>
+
+    <aside class="card">
+      <div class="eyebrow">Tu compañera de entrenamiento</div>
+      <div class="mascot-card">
+        <div class="mini">🤖</div>
+        <div><b>Pixel-01</b><p id="mascotText">Estoy aprendiendo contigo. Cada reto me hace un poquito más inteligente.</p></div>
+      </div>
+      <div class="section-title" style="margin-top:20px"><h2 style="font-size:16px">🏆 Recompensas</h2></div>
+      <div class="achievements">
+        <div class="badge"><div class="ico">🌱</div><b>Primer entrenamiento</b></div>
+        <div class="badge"><div class="ico">🧠</div><b>Detector de patrones</b></div>
+        <div class="badge"><div class="ico">⭐</div><b>Racha de 3</b></div>
+        <div class="badge locked"><div class="ico">🚀</div><b>Entrenador experto</b></div>
+      </div>
+    </aside>
+  </div>
+
+  <footer>AI Quest · Microaprendizaje + Gamificación + Personalización · Prototipo educativo</footer>
+</main>
+</div>
+<div class="toast" id="toast">+50 XP ⭐</div>
+
+<script>
+let xp=620;
+function scrollToChallenge(){document.getElementById('challenge').scrollIntoView({behavior:'smooth'})}
+function answer(btn,correct){
+  document.querySelectorAll('.option').forEach(b=>b.disabled=true);
+  const f=document.getElementById('feedback'), next=document.getElementById('nextBtn');
+  if(correct){
+    btn.classList.add('correct'); xp+=50;
+    f.textContent='¡Correcto! 🎉 Una máquina puede aprender patrones a partir de ejemplos y datos. Has ganado 50 XP.';
+    document.getElementById('mascotText').textContent='¡Eso es! Ya puedo reconocer mejor los patrones. ¡Sigamos!';
+    showToast('+50 XP ⭐');
+    next.style.display='inline-block';
+  }else{
+    btn.classList.add('wrong');
+    f.textContent='Casi. 💡 Piensa en qué tienen en común los ejemplos. La máquina necesita datos para encontrar patrones.';
+    document.getElementById('mascotText').textContent='No pasa nada. Los errores también nos dan información para aprender.';
+    f.style.background='#fff1f5'; f.style.color='#a43f5e';
+    next.style.display='inline-block';
+  }
+  f.classList.add('show');
+}
+function nextChallenge(){
+  document.getElementById('mascotText').textContent='¡Nuevo desafío desbloqueado! Ahora vamos a poner a prueba lo que aprendimos.';
+  document.querySelector('.eyebrow').textContent='Desafío completado · +50 XP';
+  showToast('Nivel completado 🏆');
+  document.getElementById('nextBtn').textContent='¡Desafío desbloqueado!';
+}
+function showToast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200)}
+</script>
+</body>
+</html>
